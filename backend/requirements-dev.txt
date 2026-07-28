@@ -2,4 +2,6 @@
 httpx>=0.28,<1.0
 pytest>=8.3,<9.0
 pytest-cov>=6.1,<7.0
-ruff>=0.11,<1.0
+# Keep backend CI deterministic; Ruff 0.16 introduced stricter checks than the
+# current codebase contract and caused unrelated commits to fail lint.
+ruff==0.15.21
