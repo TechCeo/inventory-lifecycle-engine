@@ -7,7 +7,7 @@
 
 Inventory Lifecycle Engine is a full-stack inventory platform for tracking products, locations, batches, expiration windows, quarantined stock, and depleted inventory across organizations. It turns a legacy single-user expiry tracker into a browser-based, token-secured system with tenant-aware APIs, lifecycle-aware batch workflows, and a hosted read-only demo.
 
-[Live Demo 🚀](https://inventory.yusufadamu.dev) | [API Docs 📖](https://inventory-lifecycle-engine-api.onrender.com/docs) | [API Health](https://inventory-lifecycle-engine-api.onrender.com/health)
+[Live Demo 🚀](https://inventory.yusufadamu.dev) | [API Docs 📖](https://inventory-lifecycle-engine-api.onrender.com/docs) | [API Health](https://inventory-lifecycle-engine-api.onrender.com/healthz)
 
 Demo credentials:
 
@@ -280,6 +280,7 @@ render.yaml                # Render service blueprint
 - **Frontend CI**: linting and production Vite build.
 - **Integration CI**: disposable PostgreSQL-backed integration path.
 - **Docker Build CI**: validates API, test, and web image builds.
+- **Keep-alive CI**: scheduled health ping keeps the hosted demo warm for reviewers.
 - **Docker Hub images**:
 
 | Component | Image | Tags | Registry |
@@ -294,7 +295,7 @@ Public endpoints:
 
 - Live app: [https://inventory.yusufadamu.dev](https://inventory.yusufadamu.dev)
 - API docs: [https://inventory-lifecycle-engine-api.onrender.com/docs](https://inventory-lifecycle-engine-api.onrender.com/docs)
-- API health: [https://inventory-lifecycle-engine-api.onrender.com/health](https://inventory-lifecycle-engine-api.onrender.com/health)
+- API health: [https://inventory-lifecycle-engine-api.onrender.com/healthz](https://inventory-lifecycle-engine-api.onrender.com/healthz)
 - API readiness: [https://inventory-lifecycle-engine-api.onrender.com/ready](https://inventory-lifecycle-engine-api.onrender.com/ready)
 - Keycloak discovery: [OIDC metadata](https://inventory-lifecycle-engine-keycloak.onrender.com/realms/expiry-notification/.well-known/openid-configuration)
 

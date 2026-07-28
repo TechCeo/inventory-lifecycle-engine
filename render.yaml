@@ -4,7 +4,7 @@ services:
     name: inventory-lifecycle-engine-api
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    healthCheckPath: /health
+    healthCheckPath: /healthz
     preDeployCommand: alembic upgrade head
     envVars:
       - key: APP_NAME
@@ -37,6 +37,16 @@ services:
         value: "10"
       - key: DATABASE_POOL_TIMEOUT_SECONDS
         value: "30"
+      - key: DATABASE_CONNECT_TIMEOUT_SECONDS
+        value: "5"
+      - key: DATABASE_POOL_WARMUP_ENABLED
+        value: "true"
+      - key: DATABASE_POOL_WARMUP_ATTEMPTS
+        value: "5"
+      - key: DATABASE_POOL_WARMUP_INITIAL_DELAY_SECONDS
+        value: "0.5"
+      - key: DATABASE_POOL_WARMUP_MAX_DELAY_SECONDS
+        value: "8.0"
       - key: OIDC_ISSUER_URL
         sync: false
       - key: OIDC_AUDIENCE

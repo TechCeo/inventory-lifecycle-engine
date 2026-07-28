@@ -72,6 +72,11 @@ services:
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-5}
       DATABASE_MAX_OVERFLOW: ${DATABASE_MAX_OVERFLOW:-10}
       DATABASE_POOL_TIMEOUT_SECONDS: ${DATABASE_POOL_TIMEOUT_SECONDS:-30}
+      DATABASE_CONNECT_TIMEOUT_SECONDS: ${DATABASE_CONNECT_TIMEOUT_SECONDS:-5}
+      DATABASE_POOL_WARMUP_ENABLED: ${DATABASE_POOL_WARMUP_ENABLED:-true}
+      DATABASE_POOL_WARMUP_ATTEMPTS: ${DATABASE_POOL_WARMUP_ATTEMPTS:-5}
+      DATABASE_POOL_WARMUP_INITIAL_DELAY_SECONDS: ${DATABASE_POOL_WARMUP_INITIAL_DELAY_SECONDS:-0.5}
+      DATABASE_POOL_WARMUP_MAX_DELAY_SECONDS: ${DATABASE_POOL_WARMUP_MAX_DELAY_SECONDS:-8.0}
       OIDC_ISSUER_URL: ${OIDC_ISSUER_URL:-http://localhost:8081/realms/expiry-notification}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-expiry-notification-web}
       OIDC_JWKS_URL: ${OIDC_JWKS_URL:-http://keycloak:8080/realms/expiry-notification/protocol/openid-connect/certs}
@@ -90,7 +95,7 @@ services:
         - CMD
         - python
         - -c
-        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2)
       interval: 10s
       timeout: 3s
       retries: 5

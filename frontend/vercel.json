@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/healthz",
+      "destination": "https://inventory-lifecycle-engine-api.onrender.com/healthz"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

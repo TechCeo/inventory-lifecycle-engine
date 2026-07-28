@@ -24,6 +24,13 @@ class ReadinessResponse(BaseModel):
     database: Literal["available"]
 
 
+@router.get("/healthz", include_in_schema=False)
+def healthz() -> dict[str, str]:
+    """Fast liveness probe for container health checks and keep-warm pings."""
+
+    return {"status": "healthy"}
+
+
 @router.get("/health", response_model=HealthResponse, summary="Liveness probe")
 def health(settings: Annotated[Settings, Depends(get_settings)]) -> HealthResponse:
     """Report that the API process is alive without querying dependencies."""

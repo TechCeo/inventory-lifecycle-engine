@@ -1,6 +1,7 @@
+import asyncio
 import logging
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +11,7 @@ from starlette.responses import JSONResponse
 from app.api.error_handlers import register_error_handlers
 from app.api.router import api_v1_router, system_router
 from app.core.config import get_settings
+from app.db.session import warm_database_pool
 
 settings = get_settings()
 
@@ -21,13 +23,21 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     logger.info(
         "Starting API",
         extra={"environment": settings.app_environment, "version": settings.app_version},
     )
-    yield
-    logger.info("Stopping API")
+    database_pool_warmup_task = asyncio.create_task(warm_database_pool())
+    application.state.database_pool_warmup_task = database_pool_warmup_task
+    try:
+        yield
+    finally:
+        if not database_pool_warmup_task.done():
+            database_pool_warmup_task.cancel()
+            with suppress(asyncio.CancelledError):
+                await database_pool_warmup_task
+        logger.info("Stopping API")
 
 
 def create_app() -> FastAPI:

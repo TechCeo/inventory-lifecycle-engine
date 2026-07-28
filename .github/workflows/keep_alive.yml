@@ -1,0 +1,35 @@
+name: Keep Live Demo Warm
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: keep-live-demo-warm
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  keep-alive:
+    name: Ping public health endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ping Vercel health proxy
+        run: >
+          curl
+          --fail
+          --silent
+          --show-error
+          --location
+          --max-time 20
+          --retry 2
+          --retry-delay 5
+          https://inventory.yusufadamu.dev/healthz
