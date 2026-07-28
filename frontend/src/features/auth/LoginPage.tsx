@@ -25,7 +25,7 @@ export function LoginPage() {
     <main className="auth-page">
       <Card>
         <p className="eyebrow">Secure inventory workspace</p>
-        <h1>Sign in to Expiry Notification</h1>
+        <h1>Sign in to Inventory and Expiry Mgt</h1>
         <p>
           Use your organization identity provider. The API validates OIDC access
           tokens and provisions users without storing passwords.
