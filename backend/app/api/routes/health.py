@@ -24,7 +24,7 @@ class ReadinessResponse(BaseModel):
     database: Literal["available"]
 
 
-@router.get("/healthz", include_in_schema=False)
+@router.api_route("/healthz", methods=["GET", "HEAD"], include_in_schema=False)
 def healthz() -> dict[str, str]:
     """Fast liveness probe for container health checks and keep-warm pings."""
 

@@ -37,6 +37,14 @@ def test_healthz_reports_minimal_healthy_status() -> None:
     assert response.json() == {"status": "healthy"}
 
 
+def test_healthz_accepts_head_probes() -> None:
+    with TestClient(app) as client:
+        response = client.head("/healthz")
+
+    assert response.status_code == 200
+    assert response.content == b""
+
+
 def test_health_reports_process_metadata() -> None:
     with TestClient(app) as client:
         response = client.get("/health")

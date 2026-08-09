@@ -1,8 +1,9 @@
-name: Keep Live Demo Warm
+name: Keep Render Services Warm
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    # Avoid minute zero, when GitHub documents elevated scheduled-workflow load.
+    - cron: "7,17,27,37,47,57 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -14,22 +15,34 @@ permissions:
 
 jobs:
   keep-alive:
-    name: Ping public health endpoint
+    name: Ping ${{ matrix.service }}
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 4
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: Render API
+            url: https://inventory-lifecycle-engine-api.onrender.com/healthz
+          - service: Keycloak
+            url: https://inventory-lifecycle-engine-keycloak.onrender.com/realms/expiry-notification/.well-known/openid-configuration
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Ping Vercel health proxy
-        run: >
-          curl
-          --fail
-          --silent
-          --show-error
-          --location
-          --max-time 20
-          --retry 2
-          --retry-delay 5
-          https://inventory.yusufadamu.dev/healthz
+      - name: Ping direct Render endpoint
+        env:
+          TARGET_URL: ${{ matrix.url }}
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --connect-timeout 10 \
+            --max-time 90 \
+            --retry 1 \
+            --retry-all-errors \
+            --retry-delay 5 \
+            --output /dev/null \
+            --write-out 'HTTP %{http_code} in %{time_total}s\n' \
+            "$TARGET_URL"
