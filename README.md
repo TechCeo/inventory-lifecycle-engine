@@ -34,10 +34,11 @@ Password: demo-password-change-me
 | Layer | Technology | Hosted demo |
 | --- | --- | --- |
 | Frontend | React, TypeScript, Vite, React Router, TanStack Query, React Hook Form, Zod | Vercel at `inventory.yusufadamu.dev` |
-| Backend API | FastAPI, SQLAlchemy, Pydantic, Alembic | Render Docker web service |
+| Backend API | FastAPI, SQLAlchemy, Pydantic, Alembic | Render Starter Docker web service |
 | Database | PostgreSQL | Neon serverless PostgreSQL |
-| Identity | Keycloak, OIDC/OAuth2, Authorization Code + PKCE | Render Docker web service |
+| Identity | Keycloak, OIDC/OAuth2, Authorization Code + PKCE | Render Starter Docker web service |
 | Delivery | Docker, Docker Compose, GitHub Actions | Vercel + Render + Neon |
+| Availability monitoring | UptimeRobot, health endpoints, scheduled GitHub Actions | Five-minute external checks + hourly fallback |
 
 ```mermaid
 flowchart LR
@@ -80,7 +81,7 @@ flowchart LR
 
 ## Key technical decisions
 
-- **Hybrid cloud deployment**: the frontend is deployed independently on Vercel while the API and IAM containers run on Render. This keeps browser delivery, API execution, identity, and persistence decoupled without changing the local Docker architecture.
+- **Hybrid cloud deployment**: the frontend is deployed independently on Vercel while the API and IAM containers run continuously on Render Starter instances. This keeps browser delivery, API execution, identity, and persistence decoupled without changing the local Docker architecture.
 - **Defense-in-depth demo security**: the demo user is constrained by Keycloak membership role and the backend read-only middleware. Even if a client hides or bypasses UI controls, the API blocks `POST`, `PUT`, `PATCH`, and `DELETE` under the versioned API prefix when `DEMO_READ_ONLY=true`.
 - **Strict role hierarchy at the service layer**: FastAPI route dependencies authenticate the actor, then domain services enforce organization-scoped authorization before reading or mutating tenant data. This keeps authorization close to business operations rather than relying only on frontend state.
 
@@ -280,7 +281,7 @@ render.yaml                # Render service blueprint
 - **Frontend CI**: linting and production Vite build.
 - **Integration CI**: disposable PostgreSQL-backed integration path.
 - **Docker Build CI**: validates API, test, and web image builds.
-- **Keep-alive CI**: scheduled health ping keeps the hosted demo warm for reviewers.
+- **Availability monitoring**: UptimeRobot checks the API and Keycloak every five minutes, while GitHub Actions performs an hourly direct-endpoint fallback check. Both Render services use always-on Starter instances, so monitoring detects availability issues rather than preventing idle shutdown.
 - **Docker Hub images**:
 
 | Component | Image | Tags | Registry |
