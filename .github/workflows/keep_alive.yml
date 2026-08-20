@@ -1,9 +1,9 @@
-name: Keep Render Services Warm
+name: Hourly Render Availability Check
 
 on:
   schedule:
-    # Avoid minute zero, when GitHub documents elevated scheduled-workflow load.
-    - cron: "7,17,27,37,47,57 * * * *"
+    # Paid Render services stay active; this is a low-frequency availability check.
+    - cron: "7 * * * *"
   workflow_dispatch:
 
 concurrency:
