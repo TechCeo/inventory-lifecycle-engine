@@ -17,6 +17,7 @@ COPY --chown=keycloak:keycloak --chmod=755 keycloak/render-entrypoint.sh /opt/ke
 ENV KC_DB=postgres \
     KC_CACHE=local \
     KC_HEALTH_ENABLED=true \
-    KC_METRICS_ENABLED=true
+    KC_METRICS_ENABLED=true \
+    JAVA_OPTS_APPEND="-Xms64m -Xmx256m"
 
 ENTRYPOINT ["/opt/keycloak/render-entrypoint.sh"]
